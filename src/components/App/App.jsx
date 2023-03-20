@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
 import Swal from 'sweetalert2';
 
@@ -20,14 +20,19 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = contacts.JSON.parsed(contacts);
-    if (parsedContacts) this.setState({ contacts: parsedContacts });
-  }
+    console.log(this.state.contacts);
+    const contacts = localStorage.getItem('contacts', this.state.contacts);
+    console.log(contacts);
+    const parsedContacts = JSON.parse(contacts);
 
-  componentDidUpdate(_, prevState) {
-    if (this.setState.contacts !== prevState.contacts)
-      localStorage.setItem('contacts', JSON.stringify(this.setState.contacts));
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
   }
 
   addContacts = ({ name, number }) => {
