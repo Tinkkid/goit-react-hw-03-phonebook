@@ -1,13 +1,12 @@
-import { Component } from "react";
+import { Component } from 'react';
 import { nanoid } from 'nanoid';
 import Swal from 'sweetalert2';
 
-import { ContactForm } from "components/ContactForm /ContactForm";
-import { ContactList } from "components/ContactList/ContactList";
-import { Filter } from "components/Filter/Filter";
+import { ContactForm } from 'components/ContactForm /ContactForm';
+import { ContactList } from 'components/ContactList/ContactList';
+import { Filter } from 'components/Filter/Filter';
 
 import { MainSection, ContactsTitle, Title } from './App.styled';
-
 
 export class App extends Component {
   state = {
@@ -20,13 +19,24 @@ export class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = contacts.JSON.parsed(contacts);
+    if (parsedContacts) this.setState({ contacts: parsedContacts });
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.setState.contacts !== prevState.contacts)
+      localStorage.setItem('contacts', JSON.stringify(this.setState.contacts));
+  }
+
   addContacts = ({ name, number }) => {
     const newObj = {
       id: nanoid(),
       name,
       number,
     };
-    console.log(newObj)
+    console.log(newObj);
 
     const dublicateOfName = this.state.contacts.some(
       contact => contact.name.toLowerCase() === name.toLowerCase()
@@ -39,13 +49,13 @@ export class App extends Component {
     );
 
     if (dublicateOfName) {
-      Swal.fire(`${name} is alredy in contacts`)
-     return false
+      Swal.fire(`${name} is alredy in contacts`);
+      return false;
     }
 
     if (dublicateOfNumber) {
-       Swal.fire(`${number} is alredy in contacts`);
-      return false
+      Swal.fire(`${number} is alredy in contacts`);
+      return false;
     }
 
     this.setState(({ contacts }) => ({
@@ -83,7 +93,11 @@ export class App extends Component {
         <Title>Phonebook</Title>
         <ContactForm onSubmit={this.addContacts} />
         <ContactsTitle>Contacts</ContactsTitle>
-        <Filter value={filter} contacts={contacts} onChange={this.filterContacts} />
+        <Filter
+          value={filter}
+          contacts={contacts}
+          onChange={this.filterContacts}
+        />
         <ContactList
           contacts={visibleContacts}
           deleteContact={this.deleteContact}
@@ -91,4 +105,4 @@ export class App extends Component {
       </MainSection>
     );
   }
-};
+}
