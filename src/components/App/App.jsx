@@ -5,8 +5,9 @@ import Swal from 'sweetalert2';
 import { ContactForm } from 'components/ContactForm /ContactForm';
 import { ContactList } from 'components/ContactList/ContactList';
 import { Filter } from 'components/Filter/Filter';
-
 import { MainSection, ContactsTitle, Title } from './App.styled';
+
+const STORAGE_KEY = 'contacts';
 
 export class App extends Component {
   state = {
@@ -20,8 +21,7 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    console.log(this.state.contacts);
-    const contacts = localStorage.getItem('contacts', this.state.contacts);
+    const contacts = localStorage.getItem(STORAGE_KEY, this.state.contacts);
     console.log(contacts);
     const parsedContacts = JSON.parse(contacts);
 
@@ -31,7 +31,7 @@ export class App extends Component {
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state.contacts));
     }
   }
 
